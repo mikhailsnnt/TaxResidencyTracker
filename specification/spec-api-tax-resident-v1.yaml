@@ -183,13 +183,6 @@ components:
             period:
               $ref: '#/components/schemas/PeriodCreateObject'
 
-    PeriodReadObject:
-      allOf:
-        - type: object
-          properties:
-            id:
-              $ref: '#/components/schemas/PeriodId'
-
     PeriodReadRequest:
       allOf:
         - $ref: '#/components/schemas/IRequest'
