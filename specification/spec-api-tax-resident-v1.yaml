@@ -4,7 +4,9 @@ info:
   version: "1.0"
 tags:
   - name: period
-    description: Временной промежуток отъезда 
+    description: CRUD промежутков отъезда
+  - name: tax info
+    description: Расчет данных о налоговом резидентстве
 paths:
   /period/save:
     post:
@@ -30,12 +32,17 @@ paths:
   /period/read:
     post:
       tags:
-        - Period
+        - period
       summary: Get periods
       operationId: PeriodRead
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeriodReadRequest'
       responses:
         200:
-          description: Success
+          description: Периоды текущего пользователя
           content:
             application/json:
               schema:
@@ -44,11 +51,10 @@ paths:
   /period/update:
     post:
       tags:
-        - Period
+        - period
       summary: Update period
       operationId: PeriodUpdate
       requestBody:
-        description: Request body
         content:
           application/json:
             schema:
@@ -64,11 +70,10 @@ paths:
   /period/delete:
     post:
       tags:
-        - Period
+        - period
       summary: Delete Period
       operationId: PeriodDelete
       requestBody:
-        description: Request body
         content:
           application/json:
             schema:
@@ -77,6 +82,29 @@ paths:
       responses:
         200:
           description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeriodDeleteResponse'
+
+  /residency/info:
+    post:
+      tags:
+        - tax info
+      summary: Расчет статуса налогового резидентства
+      operationId: CalculateTaxResidencyStatus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaxResidencyRequest'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxResidencyResponse'
 
 components:
   schemas:
@@ -98,6 +126,7 @@ components:
           read: '#/components/schemas/PeriodReadRequest'
           update: '#/components/schemas/PeriodUpdateRequest'
           delete: '#/components/schemas/PeriodDeleteRequest'
+          calculateResidency: '#/components/schemas/TaxResidencyRequest'
 
     Error:
       type: object
@@ -142,6 +171,7 @@ components:
           read: '#/components/schemas/PeriodReadResponse'
           update: '#/components/schemas/PeriodUpdateResponse'
           delete: '#/components/schemas/PeriodDeleteResponse'
+          calculateResidency: '#/components/schemas/TaxResidencyResponse'
 
 
     UserId:
@@ -166,6 +196,18 @@ components:
           example: 2023-02-07
           description: Дата
 
+    BaseTaxResidencyInfo:
+      type: object
+      description: Объект описывающий текущий статус налогового резидентства
+      properties:
+        willLoseResidency:
+          type: boolean
+        dateOfResidencyLoss:
+          type: string
+          format: date
+          example: 2023-01-01
+          description: Дата, когда будет превышен лимит
+
     PeriodInitResponse:
       allOf:
         - $ref: '#/components/schemas/IResponse'
@@ -188,6 +230,10 @@ components:
         - $ref: '#/components/schemas/IRequest'
         - $ref: '#/components/schemas/PeriodRequestDebug'
         - type: object
+
+    TaxResidencyRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
 
     PeriodUpdateObject:
       allOf:
@@ -232,22 +278,27 @@ components:
               $ref: '#/components/schemas/PeriodId'
 
     PeriodResponseSingle:
-      allOf:
-        - type: object
-          description: Ответ с одним объектом объявления
-          properties:
-            period:
-              $ref: '#/components/schemas/PeriodResponseObject'
+      type: object
+      description: Ответ с одним объектом объявления
+      properties:
+        period:
+          $ref: '#/components/schemas/PeriodResponseObject'
+
+    TaxResidencySingle:
+      type: object
+      description: Ответ со статусом резидентства
+      properties:
+        residencyInfo:
+          $ref: '#/components/schemas/BaseTaxResidencyInfo'
 
     PeriodResponseMulti:
-      allOf:
-        - type: object
-          description: Список найденных объектов
-          properties:
-            periods:
-              type: array
-              items:
-                $ref: '#/components/schemas/PeriodResponseObject'
+      type: object
+      description: Список найденных объектов
+      properties:
+        periods:
+          type: array
+          items:
+            $ref: '#/components/schemas/PeriodResponseObject'
 
     PeriodCreateResponse:
       allOf:
@@ -268,7 +319,15 @@ components:
       allOf:
         - $ref: '#/components/schemas/IResponse'
 
-    # STUBS ======================
+    TaxResidencyResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/TaxResidencySingle'
+
+
+
+
+        # STUBS ======================
     PeriodRequestDebugMode:
       type: string
       enum:

@@ -29,20 +29,28 @@ internal class ApiMapperTest{
 
     @Test
     fun checkSerializeAndDeserialize(){
-        val request = PeriodDeleteRequest(
+        sequenceOf(
+            PeriodDeleteRequest(
             requestType = "DELETE",
-            requestId = "someId",
+            requestId = "id",
             debug = null,
             period = PeriodDeleteObject(
                 "periodId"
             )
-        )
-        val requestJson = apiMapper.writeValueAsString(request)
+            ),
+            TaxResidencyRequest(
+                requestType = "calculateResidency",
+                requestId = "id"
+            )
+        ).forEach{
+            val requestJson = apiMapper.writeValueAsString(it)
 
-        assertEquals(
-            request,
-            apiMapper.readValue(requestJson, IRequest::class.java)
-        )
+            assertEquals(
+                it,
+                apiMapper.readValue(requestJson, IRequest::class.java)
+            )
+
+        }
     }
 
 
@@ -79,7 +87,16 @@ internal class ApiMapperTest{
                 startDate = "",
                 endDate = "",
                 id = "perId"
-            )
-        ) to "{\"responseType\":\"create\",\"responseType\":\"create\",\"requestId\":\"id\",\"result\":\"success\",\"errors\":[],\"period\":{\"startDate\":\"\",\"endDate\":\"\",\"id\":\"perId\"}}"
+            ))
+        to "{\"responseType\":\"create\",\"responseType\":\"create\",\"requestId\":\"id\",\"result\":\"success\",\"errors\":[],\"period\":{\"startDate\":\"\",\"endDate\":\"\",\"id\":\"perId\"}}",
+        TaxResidencyResponse(
+            responseType = "calculateResidency",
+            requestId = "id",
+            result = ResponseResult.SUCCESS,
+            residencyInfo = BaseTaxResidencyInfo(
+                willLoseResidency = true,
+                dateOfResidencyLoss = "2025-01-01"
+            ))
+        to "{\"responseType\":\"calculateResidency\",\"responseType\":\"calculateResidency\",\"requestId\":\"id\",\"result\":\"success\",\"errors\":null,\"residencyInfo\":{\"willLoseResidency\":true,\"dateOfResidencyLoss\":\"2025-01-01\"}}"
     )
 }
