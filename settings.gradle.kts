@@ -9,4 +9,6 @@ pluginManagement{
     }
 }
 
-include("api-jackson", "common-model")
+include("api-jackson")
+include("common-model")
+include("common-mappers")
