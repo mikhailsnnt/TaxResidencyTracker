@@ -34,7 +34,7 @@ internal class ApiMapperTest{
             requestType = "DELETE",
             requestId = "id",
             debug = null,
-            period = PeriodDeleteObject(
+            deleteObject = PeriodDeleteObject(
                 "periodId"
             )
             ),

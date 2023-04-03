@@ -265,7 +265,7 @@ components:
         - $ref: '#/components/schemas/PeriodRequestDebug'
         - type: object
           properties:
-            period:
+            deleteObject:
               $ref: '#/components/schemas/PeriodDeleteObject'
 
     PeriodResponseObject:
@@ -355,8 +355,4 @@ components:
       enum:
         - success
         - notFound
-        - badId
-        - badTitle
-        - badDescription
-        - badVisibility
-        - cannotDelete
+        - badDateFormat
