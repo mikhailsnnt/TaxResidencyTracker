@@ -1,0 +1,358 @@
+openapi: "3.0.2"
+info:
+  title: Tax resident API
+  version: "1.0"
+tags:
+  - name: period
+    description: CRUD промежутков отъезда
+  - name: tax info
+    description: Расчет данных о налоговом резидентстве
+paths:
+  /period/save:
+    post:
+      tags:
+        - period
+      summary: Save period
+      operationId: periodCreate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeriodCreateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeriodCreateResponse'
+
+  /period/read:
+    post:
+      tags:
+        - period
+      summary: Get periods
+      operationId: PeriodRead
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeriodReadRequest'
+      responses:
+        200:
+          description: Периоды текущего пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeriodReadResponse'
+
+  /period/update:
+    post:
+      tags:
+        - period
+      summary: Update period
+      operationId: PeriodUpdate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeriodUpdateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeriodUpdateResponse'
+  /period/delete:
+    post:
+      tags:
+        - period
+      summary: Delete Period
+      operationId: PeriodDelete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeriodDeleteRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeriodDeleteResponse'
+
+  /residency/info:
+    post:
+      tags:
+        - tax info
+      summary: Расчет статуса налогового резидентства
+      operationId: CalculateTaxResidencyStatus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaxResidencyRequest'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxResidencyResponse'
+
+components:
+  schemas:
+    IRequest:
+      type: object
+      description: Базовый интерфейс для всех запросов
+      properties:
+        requestType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+      discriminator:
+        propertyName: requestType
+        mapping:
+          create: '#/components/schemas/PeriodCreateRequest'
+          read: '#/components/schemas/PeriodReadRequest'
+          update: '#/components/schemas/PeriodUpdateRequest'
+          delete: '#/components/schemas/PeriodDeleteRequest'
+          calculateResidency: '#/components/schemas/TaxResidencyRequest'
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        group:
+          type: string
+        field:
+          type: string
+        message:
+          type: string
+
+    ResponseResult:
+      type: string
+      enum:
+        - success
+        - error
+
+    IResponse:
+      type: object
+      description: Базовый интерфейс для всех ответов
+      properties:
+        responseType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+        result:
+          $ref: '#/components/schemas/ResponseResult'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+
+      discriminator:
+        propertyName: responseType
+        mapping:
+          create: '#/components/schemas/PeriodCreateResponse'
+          read: '#/components/schemas/PeriodReadResponse'
+          update: '#/components/schemas/PeriodUpdateResponse'
+          delete: '#/components/schemas/PeriodDeleteResponse'
+          calculateResidency: '#/components/schemas/TaxResidencyResponse'
+
+
+    UserId:
+      type: string
+      description: Идентификатор пользователя
+    PeriodId:
+      type: string
+      description: Идентификатор периода
+
+    BasePeriod:
+      type: object
+      description: Объект описывает свойства, одинаковые для create и update
+      properties:
+        startDate:
+          type: string
+          format: date
+          example: 2023-01-01
+          description: Дата начала
+        endDate:
+          type: string
+          format: date
+          example: 2023-02-07
+          description: Дата
+
+    BaseTaxResidencyInfo:
+      type: object
+      description: Объект описывающий текущий статус налогового резидентства
+      properties:
+        willLoseResidency:
+          type: boolean
+        dateOfResidencyLoss:
+          type: string
+          format: date
+          example: 2023-01-01
+          description: Дата, когда будет превышен лимит
+
+    PeriodInitResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+
+    PeriodCreateObject:
+      allOf:
+        - $ref: '#/components/schemas/BasePeriod'
+
+    PeriodCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/PeriodRequestDebug'
+        - type: object
+          properties:
+            period:
+              $ref: '#/components/schemas/PeriodCreateObject'
+
+    PeriodReadRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/PeriodRequestDebug'
+        - type: object
+
+    TaxResidencyRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+
+    PeriodUpdateObject:
+      allOf:
+        - $ref: '#/components/schemas/BasePeriod'
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/PeriodId'
+
+    PeriodUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/PeriodRequestDebug'
+        - type: object
+          properties:
+            period:
+              $ref: '#/components/schemas/PeriodUpdateObject'
+
+    PeriodDeleteObject:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/PeriodId'
+
+    PeriodDeleteRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/PeriodRequestDebug'
+        - type: object
+          properties:
+            deleteObject:
+              $ref: '#/components/schemas/PeriodDeleteObject'
+
+    PeriodResponseObject:
+      allOf:
+        - $ref: '#/components/schemas/BasePeriod'
+        - type: object
+          description: Объект, который возвращается в ответе бэкенда
+          properties:
+            id:
+              $ref: '#/components/schemas/PeriodId'
+
+    PeriodResponseSingle:
+      type: object
+      description: Ответ с одним объектом объявления
+      properties:
+        period:
+          $ref: '#/components/schemas/PeriodResponseObject'
+
+    TaxResidencySingle:
+      type: object
+      description: Ответ со статусом резидентства
+      properties:
+        residencyInfo:
+          $ref: '#/components/schemas/BaseTaxResidencyInfo'
+
+    PeriodResponseMulti:
+      type: object
+      description: Список найденных объектов
+      properties:
+        periods:
+          type: array
+          items:
+            $ref: '#/components/schemas/PeriodResponseObject'
+
+    PeriodCreateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/PeriodResponseSingle'
+
+    PeriodReadResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/PeriodResponseMulti'
+
+    PeriodUpdateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/PeriodResponseSingle'
+
+    PeriodDeleteResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+
+    TaxResidencyResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/TaxResidencySingle'
+
+
+
+
+        # STUBS ======================
+    PeriodRequestDebugMode:
+      type: string
+      enum:
+        - prod
+        - test
+        - stub
+
+    PeriodRequestDebug:
+      type: object
+      properties:
+        debug:
+          $ref: '#/components/schemas/PeriodDebug'
+
+    PeriodDebug:
+      type: object
+      properties:
+        mode:
+          $ref: '#/components/schemas/PeriodRequestDebugMode'
+        stub:
+          $ref: '#/components/schemas/PeriodRequestDebugStubs'
+
+    PeriodRequestDebugStubs:
+      type: string
+      description: Перечисления всех стабов
+      enum:
+        - success
+        - notFound
+        - badDateFormat
