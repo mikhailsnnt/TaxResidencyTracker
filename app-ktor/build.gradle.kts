@@ -15,6 +15,10 @@ plugins {
     id("io.ktor.plugin")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
+dependencies {
+    implementation("io.ktor:ktor-server-core-jvm:2.3.0")
+    implementation("io.ktor:ktor-server-websockets-jvm:2.3.0")
+}
 
 application {
     mainClass.set("io.ktor.server.cio.EngineMain")
@@ -52,6 +56,7 @@ kotlin{
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
 
                 implementation(ktor("core"))
+                implementation(ktor("websockets"))
                 implementation(ktor("cio"))
                 implementation(ktor("caching-headers"))
                 implementation(ktor("cors"))
@@ -79,6 +84,5 @@ kotlin{
                 implementation(kotlin("test-annotations-common"))
             }
         }
-
     }
 }
