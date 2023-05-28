@@ -2,6 +2,8 @@ openapi: "3.0.2"
 info:
   title: Tax resident API
   version: "1.0"
+servers:
+  - url: http://localhost:8080
 tags:
   - name: period
     description: CRUD промежутков отъезда
@@ -172,6 +174,7 @@ components:
           update: '#/components/schemas/PeriodUpdateResponse'
           delete: '#/components/schemas/PeriodDeleteResponse'
           calculateResidency: '#/components/schemas/TaxResidencyResponse'
+          init: '#/components/schemas/InitResponse'
 
 
     UserId:
@@ -207,10 +210,6 @@ components:
           format: date
           example: 2023-01-01
           description: Дата, когда будет превышен лимит
-
-    PeriodInitResponse:
-      allOf:
-        - $ref: '#/components/schemas/IResponse'
 
     PeriodCreateObject:
       allOf:
@@ -324,6 +323,9 @@ components:
         - $ref: '#/components/schemas/IResponse'
         - $ref: '#/components/schemas/TaxResidencySingle'
 
+    InitResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
 
 
 
