@@ -16,7 +16,7 @@ kotlin {
     sourceSets{
         val datetimeVersion: String by project
 
-        @Suppress("unused")
+        @Suppress("UNUSED_VARIABLE")
         val commonMain by getting{
             dependencies{
                 implementation(kotlin("stdlib-common"))
