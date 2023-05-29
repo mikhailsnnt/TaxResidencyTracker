@@ -51,6 +51,7 @@ kotlin{
                 implementation(project(":api-multi"))
                 implementation(project(":common-model"))
                 implementation(project(":common-mappers"))
+                implementation(project(":tx-biz"))
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
