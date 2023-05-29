@@ -18,12 +18,14 @@ kotlin {
     sourceSets{
         val coroutinesVersion: String by project
         val atomicfuVersion: String by project
+        val kotlinDateTimeVersion: String by project
 
         @Suppress("UNUSED_VARIABLE")
         val commonMain by getting{
             dependencies{
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinDateTimeVersion")
 
                 implementation(project(":lib-cor"))
                 implementation(project(":common-model"))
