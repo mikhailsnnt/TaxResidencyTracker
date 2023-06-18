@@ -6,6 +6,5 @@ import mikhailsnnt.taxresident.common.model.wrappers.TxUserId
 data class TxPeriod(
     var id: String = "",
     var startDate: TxDate = "",
-    var endDate: TxDate =  "",
-    var userId: TxUserId = ""
+    var endDate: TxDate =  ""
 )

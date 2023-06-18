@@ -3,6 +3,7 @@ package mikhailsnnt.taxresiden.app.ktor.api
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import mikhailsnnt.taxresiden.app.ktor.*
+import mikhailsnnt.taxresident.biz.TxProcessor
 
 
 fun Route.period(processor: TxProcessor){

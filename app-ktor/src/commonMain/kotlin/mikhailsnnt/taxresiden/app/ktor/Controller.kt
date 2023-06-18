@@ -4,6 +4,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import mikhail.snnt.taxresident.api.v1.models.*
+import mikhailsnnt.taxresident.biz.TxProcessor
 import mikhailsnnt.taxresident.common.TxContext
 import mikhailsnnt.taxresident.common.mappers.fromTransport
 import mikhailsnnt.taxresident.common.mappers.toTransport
@@ -26,7 +27,7 @@ suspend inline fun <reified Q: IRequest> ApplicationCall.processCall(processor: 
 
     context.fromTransport(request)
 
-    processor.process(context)
+    processor.exec(context)
 
     respond(context.toTransport())
 }
