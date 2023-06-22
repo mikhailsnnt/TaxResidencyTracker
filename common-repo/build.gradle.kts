@@ -25,15 +25,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
 
                 implementation(project(":common-model"))
-            }
-        }
 
-        @Suppress("UNUSED_VARIABLE")
-        val commonTest by getting{
-            dependencies{
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
             }
         }
 
@@ -44,21 +36,9 @@ kotlin {
             }
         }
         @Suppress("UNUSED_VARIABLE")
-        val jsTest by getting {
-            dependencies {
-                implementation(kotlin("test-js"))
-            }
-        }
-        @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-jdk8"))
-            }
-        }
-        @Suppress("UNUSED_VARIABLE")
-        val jvmTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit"))
             }
         }
     }

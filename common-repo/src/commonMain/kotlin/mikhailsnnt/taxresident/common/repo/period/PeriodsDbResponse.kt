@@ -14,5 +14,12 @@ data class PeriodsDbResponse(
         fun success(data: List<TxPeriod>) = PeriodsDbResponse(data, true)
         fun error(error: TxError) = PeriodsDbResponse(null, false, listOf(error))
         fun error(errors: List<TxError>) = PeriodsDbResponse(null, false, errors)
+        fun Throwable.toPeriodsDbError() = error(
+            TxError(
+                code = "internal_db_exception",
+                group = "db_error",
+                exception = this
+            )
+        )
     }
 }

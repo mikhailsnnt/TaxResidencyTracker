@@ -11,8 +11,15 @@ data class PeriodDbResponse(
 ) : IDbResponse<TxPeriod> {
     @Suppress("unused")
     companion object {
-        fun success(data: TxPeriod) = PeriodDbResponse(data, true)
+        fun success(data: TxPeriod? = null) = PeriodDbResponse(data, true)
         fun error(error: TxError) = PeriodDbResponse(null, false, listOf(error))
         fun error(errors: List<TxError>) = PeriodDbResponse(null, false, errors)
+        fun Throwable.toPeriodDbError() = error(
+            TxError(
+                code = "internal_db_exception",
+                group = "db_error",
+                exception = this
+            )
+        )
     }
 }

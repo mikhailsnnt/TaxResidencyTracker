@@ -4,7 +4,7 @@ import mikhailsnnt.taxresident.common.model.TxPeriod
 import mikhailsnnt.taxresident.common.model.wrappers.TxUserId
 
 
-data class PeriodRequest(
+data class PeriodDbRequest(
     val userId: TxUserId,
     val period: TxPeriod
 )
