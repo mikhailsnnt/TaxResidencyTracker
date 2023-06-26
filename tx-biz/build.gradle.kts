@@ -13,7 +13,7 @@ kotlin {
         nodejs()
     }
 
-    linuxX64 {}
+//    linuxX64 {}
 
     sourceSets{
         val coroutinesVersion: String by project

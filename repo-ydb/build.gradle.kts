@@ -13,6 +13,7 @@ kotlin {
     sourceSets{
         val coroutinesVersion: String by project
         val ydbSdkVersion: String by project
+        val testContainersVersion: String by project
 
 
         @Suppress("UNUSED_VARIABLE")
@@ -34,10 +35,10 @@ kotlin {
                 implementation(kotlin("stdlib-jdk8"))
 
                 implementation(project(":tx-common"))
-
                 implementation(kotlin("test-junit"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
                 implementation("org.apache.logging.log4j:log4j-slf4j2-impl:2.20.0")
+                implementation("org.testcontainers:testcontainers:$testContainersVersion")
             }
         }
     }

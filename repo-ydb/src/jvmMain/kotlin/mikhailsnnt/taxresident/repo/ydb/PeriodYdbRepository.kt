@@ -5,8 +5,10 @@ import com.yandex.ydb.core.auth.AuthProvider
 import com.yandex.ydb.core.grpc.GrpcTransport
 import com.yandex.ydb.table.SessionRetryContext
 import com.yandex.ydb.table.TableClient
+import com.yandex.ydb.table.description.TableDescription
 import com.yandex.ydb.table.rpc.grpc.GrpcTableRpc
 import com.yandex.ydb.table.transaction.TxControl
+import com.yandex.ydb.table.values.PrimitiveType
 import mikhailsnnt.taxresident.common.model.TxPeriod
 import mikhailsnnt.taxresident.common.model.wrappers.TxUserId
 import mikhailsnnt.taxresident.common.repo.period.*
@@ -109,6 +111,19 @@ class PeriodYdbRepository(connectionString: String,
             }
     }
 
+    internal fun createTestTable(){
+        val tableDescription = TableDescription.newBuilder()
+            .addNullableColumn("period_id", PrimitiveType.string())
+            .addNullableColumn("user_id", PrimitiveType.string())
+            .addNullableColumn("start_date", PrimitiveType.date())
+            .addNullableColumn("end_date", PrimitiveType.date())
+            .setPrimaryKey("period_id")
+            .build();
+
+        retryContext.supplyStatus{
+            it.createTable("periods",tableDescription)
+        }.join().expect("Exception creating db")
+    }
 
     companion object{
         private const val TABLE_PERIOD = "periods"
