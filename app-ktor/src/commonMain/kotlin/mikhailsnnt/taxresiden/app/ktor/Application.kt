@@ -14,6 +14,9 @@ import mikhailsnnt.taxresiden.app.ktor.api.period
 import mikhailsnnt.taxresiden.app.ktor.api.taxResidency
 import mikhailsnnt.taxresiden.app.ktor.api.txHandler
 import mikhailsnnt.taxresident.biz.TxProcessor
+import mikhailsnnt.taxresident.common.TxProcessorSettings
+import mikhailsnnt.taxresident.common.repo.period.IPeriodRepository
+import mikhailsnnt.taxresident.repo.ydb.PeriodYdbRepository
 import java.time.Duration
 
 
@@ -48,7 +51,15 @@ fun Application.module() {
         json(apiV2Mapper)
     }
 
-    val processor = TxProcessor()
+
+    val settings = TxProcessorSettings(
+        periodRepositoryProd = IPeriodRepository.NONE,
+        periodRepositoryTest = PeriodYdbRepository(
+            environment.config.property("periodRepoBaseUrl").getString()
+        )
+    )
+
+    val processor = TxProcessor(settings)
 
     routing {
         webSocket("ws"){

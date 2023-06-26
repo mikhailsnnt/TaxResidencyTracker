@@ -1,13 +1,13 @@
 package mikhailsnnt.taxresident.common.mappers
 
 import mikhail.snnt.taxresident.api.v1.models.*
-import mikhailsnnt.taxresident.common.model.TxError
+import mikhailsnnt.taxresident.common.TxError
+import mikhailsnnt.taxresident.common.enums.TxCommand
+import mikhailsnnt.taxresident.common.enums.TxState
+import mikhailsnnt.taxresident.common.enums.TxStubCase
+import mikhailsnnt.taxresident.common.enums.TxWorkMode
 import mikhailsnnt.taxresident.common.model.TxPeriod
 import mikhailsnnt.taxresident.common.model.TxResidencyInfo
-import mikhailsnnt.taxresident.common.model.enums.TxCommand
-import mikhailsnnt.taxresident.common.model.enums.TxState
-import mikhailsnnt.taxresident.common.model.enums.TxStubCase
-import mikhailsnnt.taxresident.common.model.enums.TxWorkMode
 
 
 internal fun IRequest.requestId() = requestId ?: ""

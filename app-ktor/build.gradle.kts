@@ -26,7 +26,7 @@ application {
 
 kotlin{
 
-    jvm{
+    jvm {
         withJava()
     }
 //    val nativeTarget = when (System.getProperty("os.name")) {
@@ -49,8 +49,10 @@ kotlin{
                 implementation(kotlin("stdlib-common"))
 
                 implementation(project(":api-multi"))
-                implementation(project(":common-model"))
                 implementation(project(":common-mappers"))
+                implementation(project(":common-logging"))
+                implementation(project(":repo-ydb"))
+                implementation(project(":tx-common"))
                 implementation(project(":tx-biz"))
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
@@ -75,6 +77,9 @@ kotlin{
         val jvmMain by getting{
             dependencies{
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
+                implementation(project(":tx-common"))
+                implementation(project(":repo-ydb"))
+
             }
         }
 

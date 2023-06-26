@@ -1,4 +1,3 @@
-import com.yandex.ydb.auth.iam.CloudAuthHelper
 import kotlinx.coroutines.test.runTest
 import mikhailsnnt.taxresident.common.model.TxPeriod
 import mikhailsnnt.taxresident.common.model.wrappers.TxUserId
@@ -23,7 +22,7 @@ class PeriodYdbRepositoryTest {
     @Before
     fun initRepo() {
         repo = // DEBUG
-            PeriodYdbRepository("grpc://localhost:2136?database=/local", CloudAuthHelper.getAuthProviderFromEnviron())
+            PeriodYdbRepository("grpc://localhost:2136?database=/local")
     }
 
     @Test

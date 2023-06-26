@@ -14,12 +14,12 @@ pluginManagement{
     }
 }
 
+include("app-ktor")
+include("tx-biz")
 include("api-jackson")
 include("api-multi")
-include("common-model")
+include("common-logging")
 include("common-mappers")
-include("app-ktor")
 include("lib-cor")
-include("common-repo")
+include("tx-common")
 include("repo-ydb")
-include("tx-biz")

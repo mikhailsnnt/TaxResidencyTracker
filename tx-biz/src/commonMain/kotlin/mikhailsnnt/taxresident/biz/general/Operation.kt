@@ -1,8 +1,8 @@
 package mikhailsnnt.taxresident.biz.general
 
 import mikhailsnnt.taxresident.common.TxContext
-import mikhailsnnt.taxresident.common.model.enums.TxCommand
-import mikhailsnnt.taxresident.common.model.enums.TxState
+import mikhailsnnt.taxresident.common.enums.TxCommand
+import mikhailsnnt.taxresident.common.enums.TxState
 import mikhailsnnt.taxresident.lib.cor.ICorChainDsl
 import mikhailsnnt.taxresident.lib.cor.chain
 

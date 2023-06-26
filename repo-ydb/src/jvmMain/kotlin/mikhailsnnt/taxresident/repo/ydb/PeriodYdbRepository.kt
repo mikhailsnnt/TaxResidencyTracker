@@ -1,5 +1,6 @@
 package mikhailsnnt.taxresident.repo.ydb
 
+import com.yandex.ydb.auth.iam.CloudAuthHelper
 import com.yandex.ydb.core.auth.AuthProvider
 import com.yandex.ydb.core.grpc.GrpcTransport
 import com.yandex.ydb.table.SessionRetryContext
@@ -11,9 +12,11 @@ import mikhailsnnt.taxresident.common.model.wrappers.TxUserId
 import mikhailsnnt.taxresident.common.repo.period.*
 import mikhailsnnt.taxresident.common.repo.period.PeriodDbResponse.Companion.toPeriodDbError
 import mikhailsnnt.taxresident.common.repo.period.PeriodsDbResponse.Companion.toPeriodsDbError
+import mikhailsnnt.taxresident.common.sequence.nextUUID
 
 //FIXME SQL INJECTIONS WTF YDB SDK Params not working out of the box, some issue with \$ symbol
-class PeriodYdbRepository(connectionString: String, authProvider: AuthProvider) : IPeriodRepository, AutoCloseable {
+class PeriodYdbRepository(connectionString: String,
+                          authProvider: AuthProvider = CloudAuthHelper.getAuthProviderFromEnviron()) : IPeriodRepository, AutoCloseable {
 
     private val transport: GrpcTransport = GrpcTransport
         .forConnectionString(connectionString)
@@ -30,10 +33,18 @@ class PeriodYdbRepository(connectionString: String, authProvider: AuthProvider) 
         transport.close()
     }
 
-    override suspend fun create(periodDbRequest: PeriodDbRequest) = mergeOperation(periodDbRequest, "insert")
+    override suspend fun create(periodDbRequest: PeriodDbRequest) = mergeOperation(periodDbRequest.apply { period.id = nextUUID() }, "insert")
 
-    override suspend fun read(userId: TxUserId): PeriodsDbResponse {
-        val select = "SELECT * FROM $TABLE_PERIOD WHERE tx_user_id = \"${userId}\""
+    override suspend fun read(userId: TxUserId, searchFilter: PeriodDbSearchFilter): PeriodsDbResponse {
+        var select = "SELECT * FROM $TABLE_PERIOD WHERE tx_user_id = \"${userId}\""
+
+        searchFilter.id?.let {
+            select += " AND period_id = $it"
+        }
+
+        searchFilter.maxPeriods?.let{
+            select += " LIMIT $it"
+        }
 
         println(select)
         val result = retryContext.supplyResult{
@@ -56,6 +67,7 @@ class PeriodYdbRepository(connectionString: String, authProvider: AuthProvider) 
                 result.error().get().toPeriodsDbError()
             }
     }
+
 
     override suspend fun update(periodDbRequest: PeriodDbRequest) = mergeOperation(periodDbRequest, "UPSERT")
 
@@ -89,13 +101,14 @@ class PeriodYdbRepository(connectionString: String, authProvider: AuthProvider) 
 
         return result.ok()
             .map {
-                PeriodDbResponse.success()
+                PeriodDbResponse.success(periodDbRequest.period)
             }
             .orElseGet {
                 println(result.issues.map{it.code.toString() + " "+ it.message})
                 result.error().get().toPeriodDbError()
             }
     }
+
 
     companion object{
         private const val TABLE_PERIOD = "periods"
