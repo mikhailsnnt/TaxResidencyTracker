@@ -1,4 +1,4 @@
-package mikhailsnnt.taxresident.common.model.enums
+package mikhailsnnt.taxresident.common.enums
 
 @Suppress("unused")
 enum class TxStubCase{

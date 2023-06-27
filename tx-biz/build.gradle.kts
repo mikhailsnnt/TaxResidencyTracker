@@ -13,7 +13,7 @@ kotlin {
         nodejs()
     }
 
-    linuxX64 {}
+//    linuxX64 {}
 
     sourceSets{
         val coroutinesVersion: String by project
@@ -28,7 +28,8 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinDateTimeVersion")
 
                 implementation(project(":lib-cor"))
-                implementation(project(":common-model"))
+                implementation(project(":common-logging"))
+                implementation(project(":tx-common"))
             }
         }
 

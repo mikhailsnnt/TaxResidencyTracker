@@ -19,7 +19,7 @@ kotlin{
         val commonMain by getting{
             dependencies{
                 implementation(kotlin("stdlib-common"))
-                implementation(project(":common-model"))
+                implementation(project(":tx-common"))
                 implementation(project(":api-multi"))
                 implementation("org.jetbrains.kotlin:kotlin-reflect")
             }

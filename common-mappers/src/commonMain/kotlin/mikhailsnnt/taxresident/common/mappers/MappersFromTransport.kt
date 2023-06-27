@@ -2,8 +2,8 @@ package mikhailsnnt.taxresident.common.mappers
 
 import mikhail.snnt.taxresident.api.v1.models.*
 import mikhailsnnt.taxresident.common.TxContext
+import mikhailsnnt.taxresident.common.enums.TxCommand
 import mikhailsnnt.taxresident.common.mappers.exceptions.UnknownRequestException
-import mikhailsnnt.taxresident.common.model.enums.TxCommand
 
 
 fun TxContext.fromTransport(request: IRequest) = apply {

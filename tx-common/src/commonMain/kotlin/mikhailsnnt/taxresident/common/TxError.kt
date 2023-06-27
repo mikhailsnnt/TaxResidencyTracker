@@ -1,4 +1,4 @@
-package mikhailsnnt.taxresident.common.model
+package mikhailsnnt.taxresident.common
 
 data class TxError(
     val code: String = "",

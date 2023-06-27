@@ -8,3 +8,5 @@ ktor:
   application:
     modules:
       - mikhailsnnt.taxresiden.app.ktor.ApplicationKt.module
+
+periodRepoBaseUrl: 'grpc://localhost:2136?database=/local'
