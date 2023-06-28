@@ -18,6 +18,7 @@ plugins {
 dependencies {
     implementation("io.ktor:ktor-server-core-jvm:2.3.0")
     implementation("io.ktor:ktor-server-websockets-jvm:2.3.0")
+    implementation("io.ktor:ktor-client-encoding:2.3.0")
 }
 
 application {
@@ -68,6 +69,11 @@ kotlin{
 
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
+                implementation("io.ktor:ktor-server-auth:$ktorVersion")
+                implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("io.ktor:ktor-client-cio:$ktorVersion")
+                implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+
 
             }
         }
@@ -79,7 +85,6 @@ kotlin{
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
                 implementation(project(":tx-common"))
                 implementation(project(":repo-ydb"))
-
             }
         }
 

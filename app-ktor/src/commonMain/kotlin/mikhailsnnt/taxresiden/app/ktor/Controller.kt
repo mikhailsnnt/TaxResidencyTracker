@@ -1,9 +1,11 @@
 package mikhailsnnt.taxresiden.app.ktor
 
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import mikhail.snnt.taxresident.api.v1.models.*
+import mikhailsnnt.taxresiden.app.ktor.auth.authenticate
 import mikhailsnnt.taxresident.biz.TxProcessor
 import mikhailsnnt.taxresident.common.TxContext
 import mikhailsnnt.taxresident.common.mappers.fromTransport
@@ -22,7 +24,10 @@ suspend fun ApplicationCall.deletePeriod(processor: TxProcessor) = processCall<P
 suspend fun ApplicationCall.residencyInfo(processor: TxProcessor) = processCall<TaxResidencyRequest>(processor)
 
 suspend inline fun <reified Q: IRequest> ApplicationCall.processCall(processor: TxProcessor){
-    val context = TxContext()
+    if(!request.headers.contains("Authorization"))
+        respond(HttpStatusCode.NonAuthoritativeInformation,"Client not authenticated")
+
+    val context = TxContext().authenticate(request.headers["Authorization"]!!)
     val request = receive<Q>()
 
     context.fromTransport(request)
