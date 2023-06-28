@@ -1,5 +1,8 @@
 package mikhailsnnt.taxresiden.app.ktor
 
+import io.grpc.LoadBalancerRegistry
+import io.grpc.internal.PickFirstLoadBalancerProvider
+import io.ktor.client.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -9,15 +12,16 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.util.collections.*
+import kotlinx.serialization.json.Json
 import mikhail.snnt.taxresident.api.multi.v2.apiV2Mapper
 import mikhailsnnt.taxresiden.app.ktor.api.period
 import mikhailsnnt.taxresiden.app.ktor.api.taxResidency
 import mikhailsnnt.taxresiden.app.ktor.api.txHandler
 import mikhailsnnt.taxresident.biz.TxProcessor
 import mikhailsnnt.taxresident.common.TxProcessorSettings
-import mikhailsnnt.taxresident.common.repo.period.IPeriodRepository
 import mikhailsnnt.taxresident.repo.ydb.PeriodYdbRepository
 import java.time.Duration
+
 
 
 fun main() {
@@ -36,8 +40,14 @@ fun main() {
 
 }
 
+val applicationHttpClient = HttpClient(io.ktor.client.engine.cio.CIO) {
+    install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) {
+        json(Json{ignoreUnknownKeys = true})
+    }
+}
 
 fun Application.module() {
+
     install(Routing)
     install(WebSockets) {
         pingPeriod = Duration.ofSeconds(15)
@@ -51,13 +61,17 @@ fun Application.module() {
         json(apiV2Mapper)
     }
 
+    LoadBalancerRegistry.getDefaultRegistry().register(PickFirstLoadBalancerProvider())
 
     val settings = TxProcessorSettings(
-        periodRepositoryProd = IPeriodRepository.NONE,
+        periodRepositoryProd = PeriodYdbRepository(
+            System.getenv("periodRepoProdBaseUrl"),
+        ),
         periodRepositoryTest = PeriodYdbRepository(
-            environment.config.property("periodRepoBaseUrl").getString()
+            System.getenv("periodRepoTestBaseUrl")
         )
     )
+
 
     val processor = TxProcessor(settings)
 
