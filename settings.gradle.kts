@@ -15,6 +15,7 @@ pluginManagement{
 }
 
 include("app-ktor")
+include("app-serverless")
 include("tx-biz")
 include("api-jackson")
 include("api-multi")
